@@ -1,21 +1,33 @@
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { useEffect, useRef } from "react";
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
-import { Button, image } from "@nextui-org/react";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { useEffect, useRef } from "react";
+import { Button } from "../ui/button";
+import axios from "axios";
+import { Skeleton } from "../ui/skeleton";
 
-const ProductImageUpload = ({
+function ProductImageUpload({
   imageFile,
   setImageFile,
+  imageLoadingState,
   uploadedImageUrl,
   setUploadedImageUrl,
-}) => {
+  setImageLoadingState,
+  isEditMode,
+  isCustomStyling = false,
+}) {
   const inputRef = useRef(null);
-  function handelImageFileChange(event) {
-    console.log(event.target.files);
+
+  console.log(isEditMode, "isEditMode");
+
+  function handleImageFileChange(event) {
+    console.log(event.target.files, "event.target.files");
     const selectedFile = event.target.files?.[0];
+    console.log(selectedFile);
+
     if (selectedFile) setImageFile(selectedFile);
   }
+
   function handleDragOver(event) {
     event.preventDefault();
   }
@@ -32,7 +44,9 @@ const ProductImageUpload = ({
       inputRef.current.value = "";
     }
   }
+
   async function uploadImageToCloudinary() {
+    setImageLoadingState(true);
     const data = new FormData();
     data.append("my_file", imageFile);
     const response = await axios.post(
@@ -41,39 +55,51 @@ const ProductImageUpload = ({
     );
     console.log(response, "response");
 
-    if (response) setUploadedImageUrl(response.data);
+    if (response?.data?.success) {
+      setUploadedImageUrl(response.data.result.url);
+      setImageLoadingState(false);
+    }
   }
+
   useEffect(() => {
     if (imageFile !== null) uploadImageToCloudinary();
   }, [imageFile]);
 
   return (
-    <div className="w-full max-w-md mx-auto mt-4">
-      <Label className="text-lg font-semibold mb-2 block ">Upload Image</Label>
+    <div
+      className={`w-full  mt-4 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}
+    >
+      <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className="border-2 border-dashed rounded-lg p-4"
+        className={`${
+          isEditMode ? "opacity-60" : ""
+        } border-2 border-dashed rounded-lg p-4`}
       >
         <Input
-          ref={inputRef}
-          onChange={handelImageFileChange}
           id="image-upload"
           type="file"
           className="hidden"
+          ref={inputRef}
+          onChange={handleImageFileChange}
+          disabled={isEditMode}
         />
-
         {!imageFile ? (
           <Label
             htmlFor="image-upload"
-            className="flex flex-col items-center justify-center cursor-pointer h-32"
+            className={`${
+              isEditMode ? "cursor-not-allowed" : ""
+            } flex flex-col items-center justify-center h-32 cursor-pointer`}
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span>Drag & drop or click to upload image</span>
           </Label>
+        ) : imageLoadingState ? (
+          <Skeleton className="h-10 bg-gray-100" />
         ) : (
           <div className="flex items-center justify-between">
-            <div className="flex items-center ">
+            <div className="flex items-center">
               <FileIcon className="w-8 text-primary mr-2 h-8" />
             </div>
             <p className="text-sm font-medium">{imageFile.name}</p>
@@ -91,6 +117,6 @@ const ProductImageUpload = ({
       </div>
     </div>
   );
-};
+}
 
 export default ProductImageUpload;
