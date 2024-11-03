@@ -1,8 +1,8 @@
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
-import { Button } from "@nextui-org/react";
+import { Button, image } from "@nextui-org/react";
 
 const ProductImageUpload = ({
   imageFile,
@@ -32,6 +32,20 @@ const ProductImageUpload = ({
       inputRef.current.value = "";
     }
   }
+  async function uploadImageToCloudinary() {
+    const data = new FormData();
+    data.append("my_file", imageFile);
+    const response = await axios.post(
+      "http://localhost:5000/api/admin/products/upload-image",
+      data
+    );
+    console.log(response, "response");
+
+    if (response) setUploadedImageUrl(response.data);
+  }
+  useEffect(() => {
+    if (imageFile !== null) uploadImageToCloudinary();
+  }, [imageFile]);
 
   return (
     <div className="w-full max-w-md mx-auto mt-4">
