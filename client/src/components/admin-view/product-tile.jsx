@@ -6,6 +6,7 @@ export const AdminProductTile = ({
   setFormData,
   setOpenCreateProductsDialog,
   setCurrentEditedId,
+  handleDelete,
 }) => {
   return (
     <Card className="w-full max-w-sm mx-auto">
@@ -42,7 +43,13 @@ export const AdminProductTile = ({
           >
             Edit
           </Button>
-          <Button>Delete</Button>
+          <Button
+            onClick={() => {
+              handleDelete(product?._id);
+            }}
+          >
+            Delete
+          </Button>
         </CardFooter>
       </div>
     </Card>
