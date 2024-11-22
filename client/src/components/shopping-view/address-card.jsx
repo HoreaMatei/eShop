@@ -18,7 +18,7 @@ const AddressCard = ({
         <Label>Notes: {addressInfo?.notes} </Label>
       </CardContent>
       <CardFooter className="flex justify-between p-3">
-        <Button>Edit</Button>
+        <Button onClick={() => handleEditAddress(addressInfo)}>Edit</Button>
         <Button onClick={() => handleDeleteAddress(addressInfo)}>Delete</Button>
       </CardFooter>
     </Card>

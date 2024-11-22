@@ -77,10 +77,11 @@ function HeaderRightContent() {
           <span className="sr-only">User cart</span>
         </Button>
         <UserCartWrapper
+          setOpenCartSheet={setOpenCartSheet}
           cartItems={
             cartItems && cartItems.items && cartItems.items.length > 0
               ? cartItems.items
-              : ["okok"]
+              : []
           }
         />
       </Sheet>
