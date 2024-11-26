@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const ShoppingCheckout = () => {
   const { cartItems } = useSelector((state) => state.shopCart);
+  const { user } = useSelector((state) => state.auth);
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -19,6 +20,32 @@ const ShoppingCheckout = () => {
           0
         )
       : 0;
+
+  function handleInitiatePaypalPayment() {
+    const orderData = {
+      userId: user?.id,
+      cartItems: cartItems.items.map((singleCartItem) => ({
+        productId: singleCartItem?.productId,
+        title: singleCartItem?.title,
+        image: singleCartItem?.image,
+        quantity: singleCartItem?.quantity,
+        price:
+          singleCartItem?.salePrice > 0
+            ? singleCartItem?.salePrice
+            : singleCartItem?.price,
+      })),
+      addressInfo,
+      orderStatus: "pending",
+      paymentMethod: "paypal",
+      paymentStatus: "pending",
+
+      totalAmount: totalCartAmount,
+      orderDate: new Date(),
+      orderUpdateDate: new Data(),
+      paymentId: "",
+      payerId: "",
+    };
+  }
 
   return (
     <div className="flex flex-col">
@@ -44,7 +71,9 @@ const ShoppingCheckout = () => {
             </div>
           </div>
           <div className="mt-4 w-full">
-            <Button className=" w-full">Checkout with Paypal</Button>
+            <Button onClick={handleInitiatePaypalPayment} className=" w-full">
+              Checkout with Paypal
+            </Button>
           </div>
         </div>
       </div>
