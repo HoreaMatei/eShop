@@ -4,12 +4,19 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 
 const AddressCard = ({
+  setCurrentSelectedAddress,
   addressInfo,
   handleDeleteAddress,
   handleEditAddress,
 }) => {
   return (
-    <Card>
+    <Card
+      onClick={
+        setCurrentSelectedAddress
+          ? () => setCurrentSelectedAddress(addressInfo)
+          : null
+      }
+    >
       <CardContent className="grid gap-4 p-4">
         <Label>Address: {addressInfo?.address} </Label>
         <Label>City: {addressInfo?.city} </Label>
