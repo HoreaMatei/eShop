@@ -12,9 +12,13 @@ import {
 } from "../ui/table";
 import ShoppingOrderDetailsView from "./order-details";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrdersByUserId } from "@/store/shop/order-slice";
+import {
+  getAllOrdersByUserId,
+  getOrderDetails,
+  resetOrderDetails,
+} from "@/store/shop/order-slice";
 
-const ShoppingOrders = () => {
+function ShoppingOrders() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -28,7 +32,11 @@ const ShoppingOrders = () => {
     dispatch(getAllOrdersByUserId(user?.id));
   }, [dispatch]);
 
-  console.log(orderList, "orderlis");
+  useEffect(() => {
+    if (orderDetails !== null) setOpenDetailsDialog(true);
+  }, [orderDetails]);
+
+  console.log(orderDetails, "orderDetails");
   return (
     <Card>
       <CardHeader>
@@ -58,12 +66,19 @@ const ShoppingOrders = () => {
                     <TableCell>
                       <Dialog
                         open={openDetailsDialog}
-                        onOpenChange={setOpenDetailsDialog}
+                        onOpenChange={() => {
+                          setOpenDetailsDialog(false);
+                          dispatch(resetOrderDetails());
+                        }}
                       >
-                        <Button onClick={() => setOpenDetailsDialog(true)}>
+                        <Button
+                          onClick={() =>
+                            handleFetchOrderDetails(orderItem?._id)
+                          }
+                        >
                           View Details
                         </Button>
-                        <ShoppingOrderDetailsView />
+                        <ShoppingOrderDetailsView orderDetails={orderDetails} />
                       </Dialog>
                     </TableCell>
                   </TableRow>
@@ -74,6 +89,6 @@ const ShoppingOrders = () => {
       </CardContent>
     </Card>
   );
-};
+}
 
 export default ShoppingOrders;
