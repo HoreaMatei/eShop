@@ -8,7 +8,7 @@ const UserCartItemsContent = ({ cartItem }) => {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const dispatch = useDispatch();
-
+  const { productList } = useSelector((state) => state.shopProducts);
   const { toast } = useToast();
 
   function handleCartItemDelete(getCartItems) {
@@ -25,18 +25,26 @@ const UserCartItemsContent = ({ cartItem }) => {
   }
 
   function handleUpdateQuantity(getCartItem, typeOfAction) {
-    if (typeOfAction === "plus") {
+    if (typeOfAction == "plus") {
       let getCartItems = cartItems.items || [];
 
       if (getCartItems.length) {
-        const indexOfCurrentItem = getCartItems.findIndex(
+        const indexOfCurrentCartItem = getCartItems.findIndex(
           (item) => item.productId === getCartItem?.productId
         );
-        if (indexOfCurrentItem > -1) {
-          const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+
+        const getCurrentProductIndex = productList.findIndex(
+          (product) => product._id === getCartItem?.productId
+        );
+        const getTotalStock = productList[getCurrentProductIndex].totalStock;
+
+        console.log(getCurrentProductIndex, getTotalStock, "getTotalStock");
+
+        if (indexOfCurrentCartItem > -1) {
+          const getQuantity = getCartItems[indexOfCurrentCartItem].quantity;
           if (getQuantity + 1 > getTotalStock) {
             toast({
-              title: `Only ${getQuantity} can be added for this item`,
+              title: `Only ${getQuantity} quantity can be added for this item`,
               variant: "destructive",
             });
 
@@ -58,7 +66,7 @@ const UserCartItemsContent = ({ cartItem }) => {
     ).then((data) => {
       if (data?.payload?.success) {
         toast({
-          title: "Cart item was updated",
+          title: "Cart item is updated successfully",
         });
       }
     });

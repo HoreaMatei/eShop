@@ -6,7 +6,6 @@ export const registerFormControls = [
     componentType: "input",
     type: "text",
   },
-
   {
     name: "email",
     label: "Email",
@@ -137,6 +136,11 @@ export const shoppingViewHeaderMenuItems = [
     id: "accessories",
     label: "Accessories",
     path: "/shop/listing",
+  },
+  {
+    id: "search",
+    label: "Search",
+    path: "/shop/search",
   },
 ];
 
