@@ -2,12 +2,14 @@ import React from "react";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
+import { select } from "@nextui-org/react";
 
 const AddressCard = ({
   setCurrentSelectedAddress,
   addressInfo,
   handleDeleteAddress,
   handleEditAddress,
+  selectedId,
 }) => {
   return (
     <Card
@@ -16,8 +18,17 @@ const AddressCard = ({
           ? () => setCurrentSelectedAddress(addressInfo)
           : null
       }
+      className={`cursor-pointer border-red-700 ${
+        selectedId?._id === addressInfo?._id
+          ? "border-red-900 border-[4px]"
+          : "border-black"
+      }`}
     >
-      <CardContent className="grid gap-4 p-4">
+      <CardContent
+        className={`${
+          selectedId === addressInfo?._id ? "border-black" : ""
+        } grid gap-4 p-4`}
+      >
         <Label>Address: {addressInfo?.address} </Label>
         <Label>City: {addressInfo?.city} </Label>
         <Label>Pincode: {addressInfo?.pincode} </Label>
