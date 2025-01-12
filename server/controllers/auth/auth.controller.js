@@ -63,9 +63,10 @@ const loginUser = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: true }).json({
-      succes: true,
-      message: "Logged in succesfully",
+    res.status(200).json({
+      success: true,
+      message: "Logged in successull",
+      token,
       user: {
         email: checkUser.email,
         role: checkUser.role,
@@ -85,7 +86,8 @@ const loginUser = async (req, res) => {
 //logout
 
 const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split("")[1];
   if (!token)
     return res.status(401).json({
       succes: false,
