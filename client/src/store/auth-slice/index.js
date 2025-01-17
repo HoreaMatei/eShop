@@ -83,7 +83,7 @@ export const checkAuth = createAsyncThunk(
       `${import.meta.env.VITE_API_URL}/api/auth/check-auth`,
       {
         headers: {
-          authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Cache-Control":
             "no-store, no-cache, must-revalidate, proxy-revalidate",
         },
