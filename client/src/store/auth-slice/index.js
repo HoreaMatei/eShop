@@ -128,7 +128,7 @@ const authSlice = createSlice({
 
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
-        state.isAuthenticated = action.payload.success;
+        state.isAuthenticated = action.payload.success ? true : false;
         state.token = action.payload.token;
         sessionStorage.setItem("token", JSON.stringify(action.payload.token));
       })
