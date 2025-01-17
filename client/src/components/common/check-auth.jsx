@@ -2,53 +2,62 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 
-const CheckAuth = ({ isAuthenticated, user, children }) => {
+function CheckAuth({ isAuthenticated, user, children }) {
   const location = useLocation();
 
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    // Allow access to login and register routes
-    if (
-      location.pathname.includes("/login") ||
-      location.pathname.includes("/register")
-    ) {
-      return <>{children}</>;
+  console.log(location.pathname, isAuthenticated);
+
+  if (location.pathname === "/") {
+    if (!isAuthenticated) {
+      return <Navigate to="/auth/login" />;
+    } else {
+      if (user?.role === "admin") {
+        return <Navigate to="/admin/dashboard" />;
+      } else {
+        return <Navigate to="/shop/home" />;
+      }
     }
-    // Redirect all other unauthenticated users to login
-    return <Navigate to="/auth/login" replace />;
   }
 
-  // Handle redirects for authenticated users trying to access login/register
+  if (
+    !isAuthenticated &&
+    !(
+      location.pathname.includes("/login") ||
+      location.pathname.includes("/register")
+    )
+  ) {
+    return <Navigate to="/auth/login" />;
+  }
+
   if (
     isAuthenticated &&
     (location.pathname.includes("/login") ||
       location.pathname.includes("/register"))
   ) {
     if (user?.role === "admin") {
-      return <Navigate to="/admin/dashboard" replace />;
+      return <Navigate to="/admin/dashboard" />;
+    } else {
+      return <Navigate to="/shop/home" />;
     }
-    return <Navigate to="/shop/home" replace />;
   }
 
-  // Handle role-based access
   if (
     isAuthenticated &&
     user?.role !== "admin" &&
-    location.pathname.includes("/admin")
+    location.pathname.includes("admin")
   ) {
-    return <Navigate to="/unauth-page" replace />;
+    return <Navigate to="/unauth-page" />;
   }
 
   if (
     isAuthenticated &&
     user?.role === "admin" &&
-    location.pathname.includes("/shop")
+    location.pathname.includes("shop")
   ) {
-    return <Navigate to="/admin/dashboard" replace />;
+    return <Navigate to="/admin/dashboard" />;
   }
 
-  // Default behavior: Render children if no redirection is required
   return <>{children}</>;
-};
+}
 
 export default CheckAuth;
