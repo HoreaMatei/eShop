@@ -10,10 +10,9 @@ const AdminHeader = ({ setOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  function handleLogOut() {
+  function handleLogout() {
     // dispatch(logoutUser());
-    dispatch(resetTokenAndCredentials);
-
+    dispatch(resetTokenAndCredentials());
     sessionStorage.clear();
     navigate("/auth/login");
   }
@@ -29,7 +28,7 @@ const AdminHeader = ({ setOpen }) => {
       </Button>
       <div className="flex flex-1 justify-end">
         <Button
-          onClick={handleLogOut}
+          onClick={handleLogout}
           className="  bg-black inline-flex gap-2 items-center  text-white rounded-md  px-4 py-2 font-medium text-sm shadow"
         >
           <LogOut />
